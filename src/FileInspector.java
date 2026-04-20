@@ -1,7 +1,5 @@
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 
 public class FileInspector
 {
@@ -17,6 +15,39 @@ public class FileInspector
             int lineCount = 0;
             int wordCount = 0;
             int charCount = 0;
+
+            try(BufferedReader reader = new BufferedReader(new FileReader(selectedFile)))
+            {
+                String line;
+
+                while((line = reader.readLine()) != null)
+                {
+                    System.out.println(line);
+                    lineCount++;
+                    charCount += line.length();
+                    String[] words = line.trim().split("\\s+"); //split includes all white space
+                    if(!line.trim().isEmpty())
+                    {
+                        wordCount += words.length;
+                    }
+                }
+
+                System.out.println("\n===== FILE SUMMARY =====");
+                System.out.println("File Name: " + selectedFile.getName());
+                System.out.println("Lines: " + lineCount);
+                System.out.println("Words: " + wordCount);
+                System.out.println("Characters: " + charCount);
+            }
+            catch (FileNotFoundException e)
+            {
+                System.out.println("File not found");
+                throw new RuntimeException(e);
+            }
+            catch (IOException e)
+            {
+                System.out.println("Error reading file" + e.getMessage());
+                throw new RuntimeException(e);
+            }
         }
     }
 }
